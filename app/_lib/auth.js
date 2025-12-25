@@ -3,6 +3,7 @@ import Google from 'next-auth/providers/google';
 import { createMember, getUser } from './data-service';
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
+  trustHost: true, // Add this back—critical for Vercel
   providers: [
     Google({
       clientId: process.env.GOOGLE_CLIENT_ID,

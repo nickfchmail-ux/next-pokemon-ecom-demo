@@ -3,7 +3,6 @@ import Google from 'next-auth/providers/google';
 import { createMember, getUser } from './data-service';
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
-  trustHost: true, // Infuse this
   providers: [
     Google({
       clientId: process.env.GOOGLE_CLIENT_ID,
@@ -13,7 +12,18 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   pages: {
     signIn: '/login',
   },
-
+  cookies: {
+    pkceCodeVerifier: {
+      name: '__Secure-authjs.pkce.code_verifier',
+      options: {
+        httpOnly: true,
+        sameSite: 'lax',
+        path: '/',
+        secure: true,
+        domain: '.your-domain.vercel.app', // Activate if warranted
+      },
+    },
+  },
   callbacks: {
     async authorized({ auth, request }) {
       return !!auth?.user;

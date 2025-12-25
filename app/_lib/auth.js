@@ -20,7 +20,17 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         sameSite: 'lax',
         path: '/',
         secure: true,
-        domain: '.your-domain.vercel.app', // Activate if warranted
+        // Remove domain entirely—no need for single-domain Vercel apps
+      },
+    },
+    state: {
+      // Add this to match and avoid state mismatches
+      name: '__Secure-authjs.state',
+      options: {
+        httpOnly: true,
+        sameSite: 'lax',
+        path: '/',
+        secure: true,
       },
     },
   },

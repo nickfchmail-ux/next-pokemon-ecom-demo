@@ -30,7 +30,11 @@ export async function getPokemonById(id) {
 export async function getUser(email) {
   if (!email) return null;
 
-  const { data, error } = await supabase.from('members').select('*').eq('email', email).single();
+  const { data, error } = await supabase
+    .from('members')
+    .select('*')
+    .eq('email', email)
+    .maybeSingle();
 
   if (error) {
     console.error(error);

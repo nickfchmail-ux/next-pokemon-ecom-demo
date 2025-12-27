@@ -47,6 +47,12 @@ const cartSlice = createSlice({
     clearCart: (state) => {
       state.cart = [];
     },
+    synchronizeRemoteCartData: (state, action) => {
+      state.cart = action.payload;
+    },
+    saveLocalStorageDataToCartWhenNotLoggedIn: (state, action) => {
+      state.cart = action.payload;
+    },
   },
 });
 
@@ -57,6 +63,8 @@ export const {
   decrementQuantity,
   clearCart,
   setQuantity,
+  synchronizeRemoteCartData,
+  saveLocalStorageDataToCartWhenNotLoggedIn,
 } = cartSlice.actions;
 
 export default cartSlice.reducer;

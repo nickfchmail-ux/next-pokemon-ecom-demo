@@ -10,7 +10,7 @@ function PokemonCard({ name, url, id, description, price }) {
   const router = useRouter();
   const cart = useSelector((state) => state.cart.cart);
   const dispatch = useDispatch();
-  const purchaseQuantity = cart.filter((item) => item.id === id)?.at(0)?.quantity;
+  const purchaseQuantity = cart.filter((item) => item?.id === id)?.at(0)?.quantity;
 
   const hasItemInCart = purchaseQuantity > 0;
 

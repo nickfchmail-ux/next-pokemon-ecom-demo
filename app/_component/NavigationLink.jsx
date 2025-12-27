@@ -11,7 +11,7 @@ const navigation = [
 ];
 
 function NavigationLink({ view, onClose }) {
-  console.log(`nav children received onClose prop: ${onClose}`);
+
   return (
     <>
       {navigation.map((link, index) => {

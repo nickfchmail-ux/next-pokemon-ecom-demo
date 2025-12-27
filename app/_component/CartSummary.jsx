@@ -8,6 +8,8 @@ import CircularProgress from '@mui/material/CircularProgress';
 import Image from 'next/image';
 import { useSelector } from 'react-redux';
 import useGetPokemon from '../_state/_remote/pokemon/useGetPokemon';
+import ClearCartButton from './ClearCartButton';
+import LoginNavigation from './LoginNavigation';
 // Official Pokémon type colors
 const TYPE_COLORS = {
   NORMAL: '#A8A77A',
@@ -30,7 +32,7 @@ const TYPE_COLORS = {
   FAIRY: '#D685AD',
 };
 
-export default function CartSummary() {
+export default function CartSummary({ user }) {
   const cartItems = useSelector((state) => state.cart.cart);
   const { pokemonList } = useGetPokemon();
 
@@ -66,6 +68,10 @@ export default function CartSummary() {
     billingAmount += itemFinalPrice;
   });
 
+  if (!cartItems?.length > 0) return null;
+
+  if (!user) return <LoginNavigation />;
+
   return (
     <div className="w-full h-min md:h-full bg-gray-50 shadow-lg px-6 flex items-center  items-end">
       <ul className=" text-lg w-full">
@@ -94,14 +100,7 @@ export default function CartSummary() {
           </span>
         </li>
         <li className={`flex justify-between py-5`}>
-          <Button
-            variant="outlined"
-            type="submit"
-            color="error"
-            className=" text-lg p-6  transition-colors rounded-md mt-6 h-min w-[10rem]"
-          >
-            clear
-          </Button>
+          <ClearCartButton />
           <Button
             variant="outlined"
             type="submit"

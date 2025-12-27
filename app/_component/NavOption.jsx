@@ -14,11 +14,10 @@ import { useSelector } from 'react-redux';
 
 export default function NavOption({ path, label, index, totalLenght, icon, view, onClose }) {
   const cartQuantity = useSelector((state) => state.cart.cart).reduce(
-    (sum, item) => sum + item.quantity,
+    (sum, item) => sum + item?.quantity,
     0
   );
-  console.log('cart quantity: ', cartQuantity);
-  console.log('label:', label);
+
   const styles = [
     // Left button
     'flex gap-2 relative inline-flex items-center justify-center rounded-l-full bg-white px-8 py-3 text-base font-medium text-gray-900 hover:bg-gray-50 focus:z-10 focus:outline-none focus:ring-2 focus:ring-sky-500 ring-offset-4 ring-offset-slate-50 shadow-md transition-all duration-200',
@@ -79,7 +78,7 @@ export default function NavOption({ path, label, index, totalLenght, icon, view,
     }
   }
 
-  console.log(onClose);
+
 
   return (
     <List>

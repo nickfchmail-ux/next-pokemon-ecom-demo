@@ -4,7 +4,7 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { IoMdExit } from "react-icons/io";
 import { LuFilterX } from "react-icons/lu";
 export default function TagFilter({ expand, specialSpecies, view, onClose }) {
-  console.log(`tag filter children received onClose prop: ${onClose}`);
+
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();

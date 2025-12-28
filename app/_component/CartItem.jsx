@@ -5,11 +5,12 @@ import Price from './Price';
 import PurchaseQuanity from './PurchaseQuanity';
 import TotalCountPerItem from './TotalCountPerItem';
 
-export default function CartItem({ item }) {
+export default function CartItem({ item, isInView, ref }) {
   if (!item) return;
-
+  console.log('is in view: ', isInView);
   return (
     <div
+      ref={ref}
       className={`flex-1 bg-white flex m-2 drop-shadow-lg rounded-[15px]  min-w-[150px] md:flex-row flex-col md:flex-row p-1 md:p-5 h-full sm:h-[70vh] md:h-max`}
     >
       <div className={`flex-1 min-w-[100px] min-h-[100px]  relative flex-1 rounded-[15px] md:mr-5`}>

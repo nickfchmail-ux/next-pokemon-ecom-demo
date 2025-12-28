@@ -11,13 +11,11 @@ export default function TotalCountPerItem({ id }) {
     .filter((item) => item.id === id)
     ?.at(0).quantity;
 
-  console.log('selected Pokemon: ', selectedPokemon);
+
 
   const price = selectedPokemon.pokemons_selling.regular_price;
   const discount = selectedPokemon.pokemons_selling.discount;
-  console.log(`price:${price}, discount:${discount}`);
   const priceAfterDiscount = price * (1 - discount / 100);
-  console.log('price after discount: ', priceAfterDiscount);
   const formatedTotalPrice = (quantity * priceAfterDiscount).toLocaleString('en-US', {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,

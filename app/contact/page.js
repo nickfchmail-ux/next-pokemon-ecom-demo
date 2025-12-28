@@ -192,7 +192,7 @@ export default function ContactPage() {
 
               <div>
                 <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-                  Email
+                  Your Email
                 </label>
                 <input
                   type="email"

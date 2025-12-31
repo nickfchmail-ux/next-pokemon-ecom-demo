@@ -1,6 +1,6 @@
 'use client';
 import { useMutation } from '@tanstack/react-query';
-import { AnimatePresence, motion, useInView } from 'motion/react';
+import { motion, useInView } from 'motion/react';
 import { useSearchParams } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -10,7 +10,7 @@ import useGetPokemon from '../_state/_remote/pokemon/useGetPokemon';
 import Loading from '../loading';
 import CartItem from './CartItem';
 import NoCartItemsNotice from './NoCartItemsNotice';
-
+import ThankYouForShoppingMessage from './ThankYouForShoppingMessage';
 const animation = {
   visible: { opacity: 1, transition: { type: 'spring', damping: 12, stiffness: 100 } },
   hidden: { opacity: 0 },
@@ -28,6 +28,7 @@ export default function CartList({ cartData }) {
   const headerRef = useRef(null);
   const dispatch = useDispatch();
   const cart = useSelector((state) => state.cart.cart);
+  const hasJustBroughtProducts = useSelector((state) => state.cart.broughtProducts);
 
   const {
     mutate: updatePokemon,
@@ -65,7 +66,7 @@ export default function CartList({ cartData }) {
   const { pokemonList = [], isLoadingPokemon, errorForLoadingPokemon } = useGetPokemon();
 
   if (isLoadingPokemon) return <Loading />;
-
+  if (!cart?.length > 0 && hasJustBroughtProducts) return <ThankYouForShoppingMessage />;
   if (!cart?.length > 0) return <NoCartItemsNotice />;
 
   const selectedPokemons = cart.map((selectedPokemon) =>
@@ -77,25 +78,24 @@ export default function CartList({ cartData }) {
       ref={containerViewCheckPort}
       className={`flex flex-col   bg-cyan-200 overflow-y-scroll overflow-x-hidden`}
     >
-      <AnimatePresence>
-        {selectedPokemons.map((selectedPokemon) => (
-          <motion.div
-            variants={animation}
-            initial="hidden"
-            whileInView="visible"
-            transition={{ duration: 0.5 }}
-            layout
-            exit={{ opacity: 0 }}
-          >
-            <CartItem
-              key={selectedPokemon.name}
-              item={selectedPokemon}
-              isInview={isInView}
-              ref={ref}
-            />
-          </motion.div>
-        ))}
-      </AnimatePresence>
+      {selectedPokemons.map((selectedPokemon) => (
+        <motion.div
+          key={selectedPokemon.name}
+          variants={animation}
+          initial="hidden"
+          whileInView="visible"
+          transition={{ duration: 0.5 }}
+          layout
+          exit={{ opacity: 0 }}
+        >
+          <CartItem
+            key={selectedPokemon.name}
+            item={selectedPokemon}
+            isInview={isInView}
+            ref={ref}
+          />
+        </motion.div>
+      ))}
     </div>
   );
 }

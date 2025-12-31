@@ -5,5 +5,5 @@ import { getCartItems } from '../_lib/data-service';
 export default async function Page() {
   const session = await auth();
   const cartFromDatabase = await getCartItems();
-  return <CartView>{{ cartFromDatabase: cartFromDatabase, user: session.user }}</CartView>;
+  return <CartView>{{ cartFromDatabase: cartFromDatabase, user: session?.user }}</CartView>;
 }

@@ -155,8 +155,7 @@ export async function updateCartItems(item) {
 export async function deleteCartItems(item) {
   const session = await auth();
   if (!item) return;
-  console.log('member id: ', item.member_id);
-  console.log('user id: ', session.user.id);
+
   if (item.member_id !== session.user.id)
     throw new Error('You are not authorized to delete the cart item');
 
@@ -172,4 +171,65 @@ export async function deleteCartItems(item) {
   }
 
   return data;
+}
+
+export async function createOrder({ orderSummary, orderedItems }) {
+  const session = await auth();
+  if (!orderSummary || !session) return;
+
+  console.log('order summary: ', orderSummary);
+  console.log('order item: ', orderedItems);
+
+  const {
+    data: { order_id },
+    error: creatingOrderError,
+  } = await supabase.from('orders').insert([orderSummary]).select().single();
+
+  if (creatingOrderError) {
+    console.error('Error from supabase when creating order:', creatingOrderError);
+    throw new Error(creatingOrderError.message || 'Failed to delete create the order');
+  }
+
+  if (!orderedItems) throw new Error('no item was submitted');
+
+  const result = await Promise.allSettled(
+    orderedItems.map(async (item) => {
+      const { data, error: creatingOrderItemError } = await supabase
+        .from('order_items')
+        .insert([{ order_id: order_id, ...item }])
+        .select()
+        .single();
+
+      if (creatingOrderItemError) {
+        console.error(
+          `Error from supabase when creating order items - ${item.product_id} : `,
+          creatingOrderItemError
+        );
+        throw new Error(creatingOrderItemError.message || 'Failed to create the order items');
+      }
+    })
+  );
+
+  return order_id;
+}
+
+export async function getInvoices() {
+  const session = await auth();
+  if (!session) return;
+
+  if (session.user.id) {
+    // session.user.id is bigint 11
+    const { data, error } = await supabase
+      .from('orders')
+      .select('*')
+      .eq('user_id', session.user.id);
+
+    if (error) {
+      console.error('Supabase error loading user invoices:', error);
+      throw new Error(error.message || 'Failed to load user invoices');
+    }
+    return data || [];
+  }
+
+  return [];
 }

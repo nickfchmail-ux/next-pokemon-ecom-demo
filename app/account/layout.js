@@ -7,7 +7,7 @@ export default function AccountLayout({ children }) {
         <SideBar />
       </div>
 
-      <div className={`bg-gray-50 overflow-y-scroll`}>{children}</div>
+      <div className={`bg-gray-50 overflow-y-scroll bg-amber-200 w-full h-full`}>{children}</div>
     </div>
   );
 }

@@ -7,7 +7,7 @@ import TotalCountPerItem from './TotalCountPerItem';
 
 export default function CartItem({ item, isInView, ref }) {
   if (!item) return;
-  console.log('is in view: ', isInView);
+
   return (
     <div
       ref={ref}

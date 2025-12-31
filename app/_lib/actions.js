@@ -4,6 +4,7 @@ import { revalidatePath } from 'next/cache';
 import { auth, signIn, signOut } from './auth';
 import {
   addCartItems,
+  createOrder,
   deleteCartItems,
   getCartItems,
   getPokemons,
@@ -161,4 +162,8 @@ export async function updateCartItemsAction(items) {
 
   // Revalidate the cart page after changes
   revalidatePath('/cart'); // Adjust path if needed
+}
+
+export async function createOrderAction(item) {
+  return createOrder(item);
 }

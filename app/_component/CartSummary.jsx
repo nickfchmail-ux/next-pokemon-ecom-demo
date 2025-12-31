@@ -5,11 +5,16 @@ import DiscountIcon from '@mui/icons-material/Discount';
 import MonetizationOnIcon from '@mui/icons-material/MonetizationOn';
 import Button from '@mui/material/Button';
 import CircularProgress from '@mui/material/CircularProgress';
+import { useMutation } from '@tanstack/react-query';
 import Image from 'next/image';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { toast } from 'sonner';
+import { createOrderAction } from '../_lib/actions';
+import { clearCart, setBroughtProducts } from '../_state/_global/cart/CartSlice';
 import useGetPokemon from '../_state/_remote/pokemon/useGetPokemon';
 import ClearCartButton from './ClearCartButton';
 import LoginNavigation from './LoginNavigation';
+
 // Official Pokémon type colors
 const TYPE_COLORS = {
   NORMAL: '#A8A77A',
@@ -33,8 +38,23 @@ const TYPE_COLORS = {
 };
 
 export default function CartSummary({ user }) {
+  if (!user) return <LoginNavigation />;
+  const dispatch = useDispatch();
   const cartItems = useSelector((state) => state.cart.cart);
   const { pokemonList } = useGetPokemon();
+
+  const { mutate: createOrder, isPending } = useMutation({
+    mutationFn: createOrderAction,
+    onSuccess: (data) => {
+      console.log(JSON.stringify(data));
+      toast.success(`Order (${data})  has been created`);
+      dispatch(clearCart());
+      dispatch(setBroughtProducts(true));
+    },
+    onError: (err) => {
+      toast.error(`failed to create the order: ${err}`);
+    },
+  });
 
   if (!pokemonList || pokemonList.length === 0) {
     return <div className="text-center py-8">Your cart is empty or loading...</div>;
@@ -70,7 +90,19 @@ export default function CartSummary({ user }) {
 
   if (!cartItems?.length > 0) return null;
 
-  if (!user) return <LoginNavigation />;
+  const orderList = cartItems.map((selectedPokemon) => {
+    const order = pokemonList.filter((pokemon) => {
+      return pokemon.id === selectedPokemon.id;
+    });
+
+    const { id, pokemons_selling } = order.at(0);
+    const quantity = selectedPokemon.quantity;
+
+    const price_at_purchase =
+      (pokemons_selling.regular_price * (100 - pokemons_selling.discount)) / 100;
+
+    return { product_id: id, quantity, price_at_purchase };
+  });
 
   return (
     <div className="w-full h-min md:h-full bg-gray-50 shadow-lg px-6 flex items-center  items-end">
@@ -106,8 +138,19 @@ export default function CartSummary({ user }) {
             type="submit"
             color="success"
             className=" text-lg p-6  transition-colors rounded-md mt-6 h-min w-[10rem]"
+            onClick={(e) => {
+              e.preventDefault();
+              createOrder({
+                orderSummary: {
+                  user_id: user.id,
+                  total_amount: billingAmount,
+                  shipping_address: { address: 'test' },
+                },
+                orderedItems: orderList,
+              });
+            }}
           >
-            <CircularProgress size="20px" /> Pay
+            {isPending ? <CircularProgress size="20px" /> : 'Pay'}
           </Button>
         </li>
       </ul>

@@ -2,13 +2,14 @@
 
 import { createSlice } from '@reduxjs/toolkit';
 
-const initialState = { cart: [] };
+const initialState = { cart: [], broughtProducts: false };
 
 const cartSlice = createSlice({
   name: 'cart',
   initialState,
   reducers: {
     addToCart: (state, action) => {
+      state.broughtProducts = false;
       const item = state.cart.find((i) => i.id === action.payload.id);
 
       if (item) {
@@ -53,6 +54,9 @@ const cartSlice = createSlice({
     saveLocalStorageDataToCartWhenNotLoggedIn: (state, action) => {
       state.cart = action.payload;
     },
+    setBroughtProducts: (state, action) => {
+      state.broughtProducts = action;
+    },
   },
 });
 
@@ -65,6 +69,7 @@ export const {
   setQuantity,
   synchronizeRemoteCartData,
   saveLocalStorageDataToCartWhenNotLoggedIn,
+  setBroughtProducts,
 } = cartSlice.actions;
 
 export default cartSlice.reducer;

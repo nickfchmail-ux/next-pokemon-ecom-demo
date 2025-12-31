@@ -1,5 +1,6 @@
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { Josefin_Sans, Nunito } from 'next/font/google';
+import { Toaster } from 'sonner';
 import Footer from './_component/Footer';
 import Nav from './_component/Nav';
 import Providers from './_component/Providers';
@@ -33,6 +34,7 @@ export default async function RootLayout({ children }) {
       >
         <Providers>
           <ReactQueryDevtools initialIsOpen={false} />
+          <Toaster />
           <Nav />
 
           <main className="bg-amber-900 flex-1 ">

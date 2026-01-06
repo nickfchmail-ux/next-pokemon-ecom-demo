@@ -1,4 +1,5 @@
 import Box from '@mui/material/Box';
+import Chip from '@mui/material/Chip';
 import Paper from '@mui/material/Paper';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -11,18 +12,21 @@ import { getInvoices } from '../../_lib/data-service';
 
 export default async function Page() {
   const invoices = await getInvoices();
-  console.log(JSON.stringify(invoices));
 
   return invoices?.length > 0 ? (
     <Box
-      className="flex min-h-fit m-5 max-w-[80%] mx-auto"
+      className="flex min-h-screen m-5 md:max-w-[80%] mx-auto overflow-x-auto"
       sx={{ flexDirection: 'column', gap: 2 }}
     >
       <Typography variant="h5" component="h1" sx={{ fontWeight: 'bold', color: 'primary.main' }}>
         Your Orders
       </Typography>
-      <TableContainer component={Paper} elevation={3} sx={{ borderRadius: 2, overflow: 'hidden' }}>
-        <Table sx={{ minWidth: 650 }} aria-label="orders table">
+      <TableContainer
+        component={Paper}
+        elevation={3}
+        sx={{ borderRadius: 2, overflow: 'auto', maxHeight: 440 }}
+      >
+        <Table sx={{ minWidth: 650 }} aria-label="orders table" stickyHeader>
           <TableHead>
             <TableRow sx={{ backgroundColor: 'action.hover' }}>
               <TableCell sx={{ fontWeight: 'bold' }}>Order ID</TableCell>
@@ -56,25 +60,21 @@ export default async function Page() {
                     : invoice.shipping_address.address || 'N/A'}
                 </TableCell>
                 <TableCell>
-                  <Typography
-                    variant="body2"
-                    sx={{
-                      color:
-                        invoice.payment_status === 'pending'
-                          ? '#FFD700'
-                          : invoice.payment_status === 'paid'
-                            ? '#228B22'
-                            : '#FF0000',
-                      fontWeight: 'medium',
-                    }}
-                  >
-                    <span
-                      className={`py-2 px-4 ${invoice.payment_status === 'pending' ? 'bg-amber-100' : invoice.payment_status === 'paid' ? 'bg-green-100' : 'bg-red-100'}  rounded-2xl `}
-                    >
-                      {invoice.payment_status.charAt(0).toUpperCase() +
-                        invoice.payment_status.slice(1)}
-                    </span>
-                  </Typography>
+                  <Chip
+                    label={
+                      invoice.payment_status.charAt(0).toUpperCase() +
+                      invoice.payment_status.slice(1)
+                    }
+                    color={
+                      invoice.payment_status === 'pending'
+                        ? 'warning'
+                        : invoice.payment_status === 'paid'
+                          ? 'success'
+                          : 'error'
+                    }
+                    variant="outlined"
+                    sx={{ fontWeight: 'medium' }}
+                  />
                 </TableCell>
               </TableRow>
             ))}
@@ -83,8 +83,10 @@ export default async function Page() {
       </TableContainer>
     </Box>
   ) : (
-    <div className={`flex justify-center items-center`}>
-      <h1>You have no orders yet</h1>
-    </div>
+    <Box className="flex justify-center items-center min-h-screen">
+      <Typography variant="h6" component="h1">
+        You have no orders yet
+      </Typography>
+    </Box>
   );
 }

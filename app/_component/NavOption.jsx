@@ -12,12 +12,14 @@ import Stack from '@mui/material/Stack';
 
 import { useSelector } from 'react-redux';
 
-export default function NavOption({ path, label, index, totalLenght, icon, view, onClose }) {
+export default function NavOption({ path, label, index, totalLenght, icon, view, onClose, user }) {
   const cartQuantity = useSelector((state) => state.cart.cart).reduce(
     (sum, item) => sum + item?.quantity,
     0
   );
 
+  console.log('cart quantity: ', cartQuantity);
+  console.log('view: ', view);
   const styles = [
     // Left button
     'flex gap-2 relative inline-flex items-center justify-center rounded-l-full bg-white px-8 py-3 text-base font-medium text-gray-900 hover:bg-gray-50 focus:z-10 focus:outline-none focus:ring-2 focus:ring-sky-500 ring-offset-4 ring-offset-slate-50 shadow-md transition-all duration-200',
@@ -35,9 +37,9 @@ export default function NavOption({ path, label, index, totalLenght, icon, view,
         return (
           <Link href={path} className={`${styles[0]} flex gap-2`}>
             {icon}
-            {label}
+            {label.computer}
 
-            {label === 'Cart' && cartQuantity > 0 ? (
+            {path === '/cart' && cartQuantity > 0 ? (
               <Stack spacing={2} direction="row">
                 <Badge badgeContent={cartQuantity} color="primary">
                   <MailIcon color="action" />
@@ -51,8 +53,8 @@ export default function NavOption({ path, label, index, totalLenght, icon, view,
         return (
           <Link href={path} className={`${styles[2]} flex gap-2`}>
             {icon}
-            {label}
-            {label === 'Cart' && cartQuantity > 0 ? (
+            {label.computer}
+            {path === '/cart' && cartQuantity > 0 ? (
               <Stack spacing={2} direction="row">
                 <Badge badgeContent={cartQuantity} color="primary">
                   <MailIcon color="action" />
@@ -65,8 +67,8 @@ export default function NavOption({ path, label, index, totalLenght, icon, view,
         return (
           <Link href={path} className={`${styles[1]} flex gap-2`}>
             {icon}
-            {label}
-            {label === 'Cart' && cartQuantity > 0 ? (
+            {label.computer}
+            {path === '/cart' && cartQuantity > 0 ? (
               <Stack spacing={2} direction="row">
                 <Badge badgeContent={cartQuantity} color="primary">
                   <MailIcon color="action" />
@@ -78,16 +80,14 @@ export default function NavOption({ path, label, index, totalLenght, icon, view,
     }
   }
 
-
-
   return (
     <List>
       <ListItem disablePadding>
         <ListItemButton>
           <Link href={path} onClick={onClose}>
             <div className={`flex gap-2`}>
-              <ListItemText primary={label} />
-              {label === 'Cart' && cartQuantity > 0 ? (
+              <ListItemText primary={label.mobile} />
+              {path === '/cart' && cartQuantity > 0 ? (
                 <Stack spacing={2} direction="row">
                   <Badge badgeContent={cartQuantity} color="primary">
                     <MailIcon color="action" />

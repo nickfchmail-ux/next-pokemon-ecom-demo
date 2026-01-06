@@ -76,7 +76,7 @@ export default function CartList({ cartData }) {
   return (
     <div
       ref={containerViewCheckPort}
-      className={`flex flex-col   bg-cyan-200 overflow-y-scroll overflow-x-hidden`}
+      className={`flex flex-col   overflow-y-scroll overflow-x-hidden space-y-2.5`}
     >
       {selectedPokemons.map((selectedPokemon) => (
         <motion.div

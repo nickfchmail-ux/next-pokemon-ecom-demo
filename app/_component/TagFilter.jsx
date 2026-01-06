@@ -30,32 +30,32 @@ export default function TagFilter({ expand, specialSpecies, view, onClose }) {
   return (
     <div
       className={
-        view !== "mobile"
+        view !== 'mobile'
           ? `hidden  sm:flex  gap-2 flex-wrap items-center justify-center ${
-              expand ? "" : "max-h-7 overflow-hidden"
+              expand ? '' : 'max-h-7 overflow-hidden'
             }`
-          : "relative flex  gap-2 flex-wrap items-center justify-center bg-gray-800 p-2"
+          : 'relative flex  gap-2 flex-wrap items-center justify-center bg-gray-800 p-2'
       }
     >
       {[
-        "bug",
-        "dark",
-        "dragon",
-        "electric",
-        "fairy",
-        "fighting",
-        "fire",
-        "flying",
-        "ghost",
-        "grass",
-        "ground",
-        "ice",
-        "normal",
-        "poison",
-        "psychic",
-        "rock",
-        "steel",
-        "water",
+        'bug',
+        'dark',
+        'dragon',
+        'electric',
+        'fairy',
+        'fighting',
+        'fire',
+        'flying',
+        'ghost',
+        'grass',
+        'ground',
+        'ice',
+        'normal',
+        'poison',
+        'psychic',
+        'rock',
+        'steel',
+        'water',
       ].map((tag) => {
         return (
           <Image
@@ -67,12 +67,12 @@ export default function TagFilter({ expand, specialSpecies, view, onClose }) {
             onClick={() => toggleTag(tag)}
             className={` rounded cursor-pointer z-10000 ${
               currentTags.includes(tag)
-                ? " border-2 border-blue-600 inset-shadow-lg scale-100"
-                : "bg-white border border-gray-300 scale-68"
+                ? ' border-2 border-blue-600 inset-shadow-lg scale-100'
+                : 'bg-white border border-gray-300 scale-68'
             } ${
               specialSpecies.includes(tag)
-                ? ""
-                : "opacity-30 cursor-not-allowed pointer-events-none"
+                ? ''
+                : 'opacity-30 cursor-not-allowed pointer-events-none'
             }`}
           />
         );
@@ -81,7 +81,7 @@ export default function TagFilter({ expand, specialSpecies, view, onClose }) {
         <button
           className="flex gap-[3px] text-red-600 items-center justify-baseline text-center border border-red-600 px-2 py-[1px] rounded hover:bg-red-100 text-[10px]"
           onClick={() => {
-            params.delete("tag");
+            params.delete('tag');
             router.push(`${pathname}?${params.toString()}`);
           }}
         >
@@ -89,8 +89,8 @@ export default function TagFilter({ expand, specialSpecies, view, onClose }) {
         </button>
       ) : null}
 
-      {view === "mobile" ? (
-        <button className="absolute top-2 right-1 text-white" onClick={onClose}>
+      {view === 'mobile' ? (
+        <button className="absolute top-2 right-1 text-white cursor-pointer" onClick={onClose}>
           <IoMdExit className="size-5" />
         </button>
       ) : null}

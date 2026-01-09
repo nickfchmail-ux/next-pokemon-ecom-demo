@@ -21,18 +21,20 @@ export default async function Page({ params }) {
 
   const { image, name, descriptions, species } = selectedPokemon;
 
+  const unitedSpecies = new Set(species);
+
   return (
     <>
       <div className="bg-primary-700 flex flex-col md:flex-row min-h-[82.5vh] justify-center">
         <div className="bg-primary-800 flex  flex-col items-center justify-center min-w-50 ">
           <h1 className=" text-primary-50 p-2">{name}</h1>
           <div className={`flex gap-2 flex-wrap justify-center w-full relative`}>
-            {species.map((spec) => (
+            {Array.from(unitedSpecies).map((spec) => (
               <Image
                 src={`/${spec}.png`}
                 width={100}
                 height={10}
-                key={`${image}-detail-page`}
+                key={`${image}-detail-page-${name}-${spec}`}
                 alt={name}
               />
             ))}
@@ -59,8 +61,8 @@ export default async function Page({ params }) {
 
           <div className={`flex justify-between p-2 mt-auto    w-full`}>
             <div>
-              <AddToCartButton id={selectedPokemon?.id} />
-              <AmendCartQuanityButton id={selectedPokemon?.id} alt={name} />
+              <AddToCartButton id={selectedPokemon?.id} view={'detail'} />
+              <AmendCartQuanityButton id={selectedPokemon?.id} alt={name} view={'detail'} />
             </div>
             <BackButton />
           </div>

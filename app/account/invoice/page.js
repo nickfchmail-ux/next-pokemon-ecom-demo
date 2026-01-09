@@ -55,9 +55,27 @@ export default async function Page() {
                 </TableCell>
                 <TableCell>${invoice.total_amount.toFixed(2)}</TableCell>
                 <TableCell>
-                  {invoice.shipping_address.street
-                    ? `${invoice.shipping_address.street}, ${invoice.shipping_address.city}, ${invoice.shipping_address.state} ${invoice.shipping_address.zip_code}, ${invoice.shipping_address.country}`
-                    : invoice.shipping_address.address || 'N/A'}
+                  {invoice.shipping_address !== 'pending for submission' ? (
+                    <div className={`space-y-2`}>
+                      {invoice.shipping_address.line1 ? (
+                        <p>{invoice.shipping_address.line1}</p>
+                      ) : null}
+                      {invoice.shipping_address.line2 ? (
+                        <p>{invoice.shipping_address.line2}</p>
+                      ) : null}
+                      {invoice.shipping_address.state ? (
+                        <p>{invoice.shipping_address.state}</p>
+                      ) : null}
+                      {invoice.shipping_address.country ? (
+                        <p>{invoice.shipping_address.country}</p>
+                      ) : null}
+                      {invoice.shipping_address.postal_code ? (
+                        <p>{invoice.shipping_address.postal_code}</p>
+                      ) : null}
+                    </div>
+                  ) : (
+                    'Not Provided'
+                  )}
                 </TableCell>
                 <TableCell>
                   <Chip

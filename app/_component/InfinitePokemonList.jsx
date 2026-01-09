@@ -1,6 +1,6 @@
 'use client';
 import { useInfiniteQuery, useMutation } from '@tanstack/react-query';
-import { useMotionValueEvent, useScroll } from 'motion/react'; // Added useMotionValueEvent
+import { useScroll } from 'motion/react'; // Added useMotionValueEvent
 import { useSearchParams } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
@@ -8,7 +8,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { updateCartItemsAction } from '../_lib/actions';
 import { getPokemons } from '../_lib/data-client-service';
 import { synchronizeRemoteCartData } from '../_state/_global/cart/CartSlice';
-import { setScrollingDirection } from '../_state/_global/scrollingDirection/ScrollingDirectionSlice';
 import Loading from '../loading';
 import ExpandButton from './ExpandButton';
 import FilterCount from './FilterCount';
@@ -27,16 +26,9 @@ function PokemonListContent({
   hasNextPage,
   isFetchingNextPage,
 }) {
-  const dispatch = useDispatch();
   const containerRef = useRef(null);
   const { ref, inView } = useInView();
   const { scrollY } = useScroll({ container: containerRef });
-
-  useMotionValueEvent(scrollY, 'change', (latest) => {
-    const diff = latest - scrollY.getPrevious();
-
-    dispatch(setScrollingDirection(diff > 0 ? 'down' : 'up'));
-  });
 
   useEffect(() => {
     if (inView && hasNextPage && !isFetchingNextPage) fetchNextPage();

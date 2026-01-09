@@ -164,6 +164,7 @@ export async function updateCartItemsAction(items) {
   revalidatePath('/cart'); // Adjust path if needed
 }
 
-export async function createOrderAction(item) {
-  return createOrder(item);
+export async function createOrderAction(items) {
+  return await createOrder(items);
 }
+

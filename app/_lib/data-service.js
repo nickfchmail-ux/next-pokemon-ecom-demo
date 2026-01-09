@@ -173,17 +173,29 @@ export async function deleteCartItems(item) {
   return data;
 }
 
-export async function createOrder({ orderSummary, orderedItems }) {
-  const session = await auth();
-  if (!orderSummary || !session) return;
+const price_at_purchase = {};
 
-  console.log('order summary: ', orderSummary);
-  console.log('order item: ', orderedItems);
+export async function createOrder({ orderedItems }) {
+  const session = await auth();
+
+  if (!session.user) return;
+
+  const {
+    user: { id: userId },
+  } = session;
+
+  const billingAmount = await calculateBillingAmount(orderedItems);
 
   const {
     data: { order_id },
     error: creatingOrderError,
-  } = await supabase.from('orders').insert([orderSummary]).select().single();
+  } = await supabase
+    .from('orders')
+    .insert([
+      { user_id: userId, total_amount: billingAmount, shipping_address: 'pending for submission' },
+    ])
+    .select()
+    .single();
 
   if (creatingOrderError) {
     console.error('Error from supabase when creating order:', creatingOrderError);
@@ -196,7 +208,14 @@ export async function createOrder({ orderSummary, orderedItems }) {
     orderedItems.map(async (item) => {
       const { data, error: creatingOrderItemError } = await supabase
         .from('order_items')
-        .insert([{ order_id: order_id, ...item }])
+        .insert([
+          {
+            order_id: order_id,
+            product_id: item.id,
+            quantity: item.quantity,
+            price_at_purchase: price_at_purchase[`${item.id}`],
+          },
+        ])
         .select()
         .single();
 
@@ -210,7 +229,7 @@ export async function createOrder({ orderSummary, orderedItems }) {
     })
   );
 
-  return order_id;
+  return { orderId: order_id, billingAmount };
 }
 
 export async function getInvoices() {
@@ -232,4 +251,73 @@ export async function getInvoices() {
   }
 
   return [];
+}
+
+export async function updatePaymentStatus({ orderId, billingAddress, paymentStatus }) {
+  console.log('billingAddress: ', billingAddress, orderId);
+  if (paymentStatus === 'payment_intent.succeeded') {
+    const { error } = await supabase
+      .from('orders')
+      .update({ payment_status: 'paid', shipping_address: billingAddress })
+      .eq('order_id', orderId);
+
+    if (error) throw new Error(error.message);
+  }
+  // Add more cases later (e.g., failed payments)
+}
+
+export async function getOrderItemsByOrderId(orderId) {
+  const session = await auth();
+
+  if (!session.user) throw new Error('you have to login before placing order');
+
+  const { data: orderDetails, error: validationError } = await supabase
+    .from('orders')
+    .select('*')
+    .eq('order_id', orderId);
+
+  if (validationError) {
+    throw new Error(validationError.message);
+  }
+
+  if (orderDetails.at(0)?.user_id !== session.user.id)
+    throw new Error('You are not allowed to retrieve the order details');
+
+  const { data: orderItems, error } = await supabase
+    .from('order_items')
+    .select('*')
+    .eq('order_id', orderId);
+
+  return orderItems;
+}
+
+export async function calculateBillingAmount(orderedItems) {
+  function deductDiscount(id, regularPrice, discount) {
+    const priceAfterDiscount = (regularPrice * (100 - discount)) / 100;
+
+    price_at_purchase[id] = priceAfterDiscount;
+
+    return priceAfterDiscount;
+  }
+  const orderedQuantity = {};
+
+  const selectedPokemonsId = orderedItems.map((pokemon) => {
+    orderedQuantity[`${pokemon.id}`] = pokemon.quantity;
+    return pokemon.id;
+  });
+
+  const { data: pokemonSellingInfo } = await supabase
+    .from('pokemons_selling')
+    .select('*')
+    .in('reference_id', selectedPokemonsId);
+
+  const billingAmount = pokemonSellingInfo.reduce(
+    (sum, pokemon) =>
+      sum +
+      deductDiscount(pokemon.reference_id, pokemon.regular_price, pokemon.discount) *
+        orderedQuantity[pokemon.reference_id],
+    0
+  );
+
+  return billingAmount;
 }

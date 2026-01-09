@@ -40,7 +40,9 @@ export default function AmendCartQuanityButton({ id, view }) {
 
   return (
     <div className={`flex gap-x-3 flex-wrap `}>
-      <div className={`flex w-full gap-1 place-items-center `}>
+      <div
+        className={`flex w-full gap-1 place-items-center ${view?.toLowerCase() === 'detail' ? 'text-primary-200' : 'text-primary-700'} `}
+      >
         <button
           className={`hover:text-blue-500 active:scale-95`}
           onClick={() => dispatch(incrementQuantity({ id: id }))}

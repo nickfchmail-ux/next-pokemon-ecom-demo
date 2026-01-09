@@ -122,7 +122,7 @@ export default function UserProfile({ children }) {
               <AvatarImage src={preview} alt="Profile" />
               <AvatarFallback className="text-4xl">JD</AvatarFallback>
             </Avatar>
-            <div className={`flex flex-col gap-2`}>
+            <div className={`flex flex-col gap-2 text-primary-800`}>
               <button
                 onClick={(e) => {
                   e.preventDefault();
@@ -150,7 +150,7 @@ export default function UserProfile({ children }) {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 h-[min-content] mt-2">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 h-[min-content] mt-2 text-primary-950 font-bold">
             <FormField
               control={form.control}
               name="first_name"

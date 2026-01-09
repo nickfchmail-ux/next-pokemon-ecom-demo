@@ -4,17 +4,17 @@ import CreditCardIcon from '@mui/icons-material/CreditCard';
 import DiscountIcon from '@mui/icons-material/Discount';
 import MonetizationOnIcon from '@mui/icons-material/MonetizationOn';
 import Button from '@mui/material/Button';
-import CircularProgress from '@mui/material/CircularProgress';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { toast } from 'sonner';
 import { createOrderAction } from '../_lib/actions';
-import { clearCart, setBroughtProducts } from '../_state/_global/cart/CartSlice';
+import { clearCart } from '../_state/_global/cart/CartSlice';
 import useGetPokemon from '../_state/_remote/pokemon/useGetPokemon';
+import Loading from '../loading';
 import ClearCartButton from './ClearCartButton';
 import LoginNavigation from './LoginNavigation';
-
 // Official Pokémon type colors
 const TYPE_COLORS = {
   NORMAL: '#A8A77A',
@@ -36,28 +36,41 @@ const TYPE_COLORS = {
   STEEL: '#B7B7CE',
   FAIRY: '#D685AD',
 };
-
 export default function CartSummary({ user }) {
   if (!user) return <LoginNavigation />;
+  const queryClient = useQueryClient();
+  const router = useRouter();
   const dispatch = useDispatch();
   const cartItems = useSelector((state) => state.cart.cart);
   const { pokemonList } = useGetPokemon();
 
-  const { mutate: createOrder, isPending } = useMutation({
+  const [orderId, setOrderId] = useState(null);
+
+  const {
+    mutateAsync: createOrder,
+    isLoading,
+    isError,
+    error,
+  } = useMutation({
     mutationFn: createOrderAction,
     onSuccess: (data) => {
-      console.log(JSON.stringify(data));
-      toast.success(`Order (${data})  has been created`);
+      // Optionally refresh cached queries
+      queryClient.invalidateQueries({ queryKey: ['orders'] });
+
+      const params = new URLSearchParams();
+
+      params.set('orderId', data.orderId);
       dispatch(clearCart());
-      dispatch(setBroughtProducts(true));
-    },
-    onError: (err) => {
-      toast.error(`failed to create the order: ${err}`);
+      router.push(`/checkout?${params.toString()}`);
     },
   });
 
   if (!pokemonList || pokemonList.length === 0) {
-    return <div className="text-center py-8">Your cart is empty or loading...</div>;
+    return (
+      <div className="text-center py-8">
+        <Loading />
+      </div>
+    );
   }
 
   const totalQuantity = cartItems.reduce((sum, item) => sum + item.quantity, 0);
@@ -88,69 +101,50 @@ export default function CartSummary({ user }) {
     billingAmount += itemFinalPrice;
   });
 
-  if (!cartItems?.length > 0) return null;
+  if (cartItems.length === 0) return null;
 
-  const orderList = cartItems.map((selectedPokemon) => {
-    const order = pokemonList.filter((pokemon) => {
-      return pokemon.id === selectedPokemon.id;
-    });
+  const handleProceedToCheckout = () => {
+    const params = new URLSearchParams();
 
-    const { id, pokemons_selling } = order.at(0);
-    const quantity = selectedPokemon.quantity;
-
-    const price_at_purchase =
-      (pokemons_selling.regular_price * (100 - pokemons_selling.discount)) / 100;
-
-    return { product_id: id, quantity, price_at_purchase };
-  });
+    createOrder({ orderedItems: cartItems });
+  };
 
   return (
-    <div className="w-full h-min md:h-full bg-gray-50 shadow-lg px-6 flex items-center  items-end">
-      <ul className=" text-lg w-full">
+    <div className="w-full h-min md:h-full bg-gray-50 shadow-lg px-6 flex items-center items-end">
+      <ul className="text-lg w-full">
         <li className="flex justify-center border-b py-2 gap-x-2">
-          <Image src={`/pokeball.png`} width={20} height={15} alt="pokeball" />x
+          <Image src={`/pokeball.png`} width={20} height={15} alt="pokeball" />x{' '}
           <span className="font-semibold">{totalQuantity}</span>
         </li>
-        <li className="flex justify-between border-b ">
+        <li className="flex justify-between border-b">
           <span>
             <MonetizationOnIcon />
           </span>
           <span className="font-semibold">${totalRegularPrice.toFixed(2)}</span>
         </li>
-        <li className="flex justify-between border-b ">
+        <li className="flex justify-between border-b">
           <span>
             <DiscountIcon />
           </span>
           <span className="font-semibold text-red-500">-${totalDiscountSavings.toFixed(2)}</span>
         </li>
-        <li className="flex justify-between   ">
+        <li className="flex justify-between">
           <span>
             <CreditCardIcon />
           </span>
-          <span className=" text-green-400 flex place-items-center font-semibold">
+          <span className="text-green-400 flex place-items-center font-semibold">
             ${billingAmount.toFixed(2)}
           </span>
         </li>
-        <li className={`flex justify-between py-5`}>
+        <li className="flex justify-between py-5">
           <ClearCartButton />
           <Button
             variant="outlined"
-            type="submit"
             color="success"
-            className=" text-lg p-6  transition-colors rounded-md mt-6 h-min w-[10rem]"
-            onClick={(e) => {
-              e.preventDefault();
-              createOrder({
-                orderSummary: {
-                  user_id: user.id,
-                  total_amount: billingAmount,
-                  shipping_address: { address: 'test' },
-                },
-                orderedItems: orderList,
-              });
-            }}
+            className="text-lg p-6 transition-colors rounded-md mt-6 h-min w-[10rem]"
+            onClick={handleProceedToCheckout}
           >
-            {isPending ? <CircularProgress size="20px" /> : 'Pay'}
+            Proceed to Checkout
           </Button>
         </li>
       </ul>

@@ -8,25 +8,25 @@
 Features
 
 
-1. Cart
+1. Cart -
  The reason that i find redux suitable in this project because that are lots of calculation neccessary to make the cart interactive throughout the application, like the quantity, products added to the cart and the billing amount dependent to the user's selections.
 
  During development, the difficulty that I encountered was that every time I loaded the cart items from database in order to display the past selections. The data was not sychronized with the frontend application, or if it does, it would clear out all the data in the database, because initially, the cart items in the frontend was empty. The solution that i applied fixing the problem is to create a state with "useState" function to ensure it would load the data from database first and then do the synchronization with "useEffect" function.
 
  This is the most interesting part, because the feature was suggested by the AI (grok), during which i interacted with and in the meanwhile asking AI for help, and fixed the problem until the wee hours.
 
-2. User Profile
+2. User Profile -
 The TanStack Query help to handle user request only happened in the frontend, and give access to pending state when the POST request is submitted to the server. It make developer capable to deliver the user experience when the user is waiting for server's response.
 
 ![alt text](image-4.png)
 
-3. Infinite scrolling
+3. Infinite scrolling -
 The TanStack Query also provides a very handy feature to adopt infinite scrolling just like scrolling video on Youtube. Initially, the product page will only show a little amount of products for sale. After the user scrolls nearly at the end of the div (the container), a POST request would be made to the server to load more products for display.
 
 ![alt text](image-3.png)
 
 
-4. Payment
+4. Payment -
 I find this is the coolest feature because it brings the project to a real world application where user can settle their payment online, but this is the most difficul part because of lack of teaching courses from Udemy. Hopefully, by reading documentation from Stripe offical website and surfing Youtube for learning materials, the feature is finally finished and able to be launched.
 
 ![alt text](image-2.png)
@@ -41,7 +41,7 @@ Nowsday, AI could really build amazing pages within a minute with just a few pro
 
 ![alt text](image-7.png)
 
-1. Tailwind CSS
+1. Tailwind CSS -
 Tailwind CSS offers css patterns for developer to quickly adopt a common UI. The cool thing is that this applies to responsive layout display with mobile first media approach. I figured out it is very easy to set mobile UI with just "md:____" and it will make your layout adaptive to mobile screen.
 
 ![alt text](image.png) ![alt text](image-1.png)

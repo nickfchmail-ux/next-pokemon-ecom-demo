@@ -17,7 +17,7 @@ import {
 import SignOutButton from './SignOutButton';
 const SideBar = ({ onClose }) => {
   const pathname = usePathname();
-  console.log(pathname);
+
   const list = (anchor) => {
     const navItems = [
       {

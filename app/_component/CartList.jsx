@@ -1,5 +1,6 @@
 'use client';
 import { useMutation } from '@tanstack/react-query';
+import { AnimatePresence } from 'framer-motion';
 import { motion, useInView } from 'motion/react';
 import { useSearchParams } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
@@ -78,26 +79,24 @@ export default function CartList({ cartData }) {
   return (
     <div
       ref={containerViewCheckPort}
-      className={`flex flex-col   overflow-y-scroll overflow-x-hidden space-y-2.5`}
+      className="flex flex-col overflow-y-scroll overflow-x-hidden space-y-2.5"
     >
-      {selectedPokemons.map((selectedPokemon) => (
-        <motion.div
-          key={selectedPokemon.name}
-          variants={animation}
-          initial="hidden"
-          whileInView="visible"
-          transition={{ duration: 0.5 }}
-          layout
-          exit={{ opacity: 0 }}
-        >
-          <CartItem
-            key={selectedPokemon.name}
-            item={selectedPokemon}
-            isInview={isInView}
-            ref={ref}
-          />
-        </motion.div>
-      ))}
+      <AnimatePresence>
+        {selectedPokemons.map((selectedPokemon) => (
+          <motion.div
+            key={selectedPokemon.id} // ← Use a unique ID, not name
+            variants={animation}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ root: containerViewCheckPort }}
+            transition={{ duration: 0.5 }}
+            layout // Keeps layout shifts smooth for remaining items
+            exit={{ opacity: 0.8, x: -1500, transition: { duration: 0.3 } }} // Example richer exit
+          >
+            <CartItem item={selectedPokemon} isInview={isInView} ref={ref} />
+          </motion.div>
+        ))}
+      </AnimatePresence>
     </div>
   );
 }

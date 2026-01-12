@@ -9,7 +9,7 @@ export default function TotalCountPerItem({ id }) {
   const selectedPokemon = pokemonList.filter((pokemon) => pokemon.id === id).at(0);
   const quantity = useSelector((state) => state.cart.cart)
     .filter((item) => item.id === id)
-    ?.at(0).quantity;
+    ?.at(0)?.quantity;
 
 
 

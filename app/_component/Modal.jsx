@@ -44,7 +44,7 @@ function Window({ children, name }) {
   }
 
   return createPortal(
-    <Overlay>
+    <Overlay view={name}>
       <div ref={ref} className="modal-window">
         {enhancedChildren}
       </div>
@@ -67,3 +67,4 @@ function Open({ children, name }) {
 
 // Compound component pattern for cleaner usage
 export { Modal, Open, Window };
+

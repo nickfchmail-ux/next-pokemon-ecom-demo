@@ -34,7 +34,7 @@ export default async function RootLayout({ children }) {
   return (
     <html lang="en">
       <body
-        className={`${josefin.className} ${nunito.className} flex flex-col bg-primary-950 min-h-screen text-primary-50  `}
+        className={`${josefin.className} ${nunito.className} flex flex-col bg-primary-950 min-h-screen text-primary-50 `}
       >
         <Providers>
           <ReactQueryDevtools initialIsOpen={false} />

@@ -27,7 +27,7 @@ The TanStack Query also provides a very handy feature to implement infinite scro
 
 
 4. __Payment__ -
-this is the coolest feature because it brings the project to a real world application where user can settle their payment online, but this is the most difficul part because of a lack of teaching courses from Udemy. Hopefully, by reading documentation from Stripe offical website and surfing Youtube for learning materials, the feature is finally finished and able to be launched.
+this is the coolest feature because it brings the project to a real world application where user can settle their payment online, but this is the most difficult part because of a lack of teaching courses from Udemy. Hopefully, by reading documentation from Stripe offical website and surfing Youtube for learning materials, the feature is finally finished and able to be launched.
 
 ![alt text](image-2.png)
 

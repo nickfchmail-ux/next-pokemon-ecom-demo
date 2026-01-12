@@ -9,7 +9,7 @@ Deployment to Vercel: https://next-pokemon-ecom-demo.vercel.app/
 
 
 1. __Cart__ -
- The reason that redux suitable is found suitable in this project because that are lots of calculation neccessary to make the cart interactive throughout the application, like the quantity, products added to the cart and the billing amount dependent to the user's selections.
+ The reason that redux is found suitable in this project because that are lots of calculation neccessary to make the cart interactive throughout the application, like the quantity, products added to the cart and the billing amount dependent to the user's selections.
 
  During development, the difficulty encountered was loading the past user selections from database (Supabase). The data was not synchronized with the frontend application, or if it does, it would clear out all the data in the database, due to the fact that initially, the cart items in the frontend was empty. The solution fixing the problem is to create a state with "useState" function to ensure it would load the data from database first and then do the synchronization with "useEffect".
 

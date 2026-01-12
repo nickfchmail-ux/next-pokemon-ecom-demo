@@ -21,7 +21,7 @@ The TanStack Query help to handle user request only from the frontend, and give 
 ![alt text](image-4.png)
 
 3. __Infinite scrolling__ -
-The TanStack Query also provides a very handy feature to adopt infinite scrolling just like Youtube. Initially, the product page will only show a little amount of products for sale. After the user scrolls nearly at the end of the div (the container), a POST request would be made to the server to load more products for display.
+The TanStack Query also provides a very handy feature to implement infinite scrolling just like Youtube. Initially, the product page will only show a little amount of products for sale. After the user scrolls nearly at the end of the div (the container), a POST request would be made to the server to load more products for display.
 
 ![alt text](image-3.png)
 

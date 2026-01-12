@@ -2,7 +2,7 @@
 
  This is an ecommerce project developed by NEXT.js, a react framework that links frontend and backend all together,  which makes building a website far more easier than before. The ecommerce store is called Poke 芒. The main reason pokemon is chosen as my products is because all the data are coming from open souroce API (Application Programming Interface), so it can save time building my owns products.
 
- Arround 70% of code is written by hand, and the rest is written by AI, so it might look messy for the parts written by my hand. The react APIs that are used in this project includes StanStack Query, Redux for remote and global state integration accross different pages.
+ Around 70% of code is written by hand, and the rest is written by AI, so it might look messy for the parts written by my hand. The react APIs that are used in this project includes StanStack Query, Redux for remote and global state integration accross different pages.
 
 
 Features
@@ -33,7 +33,7 @@ I find this is the coolest feature because it brings the project to a real world
 
 UI
 
-Nowadays, AI could really build amazing pages within a minute with just a few prompt, the Home, About are actually build with help of AI. Although it is super easy to simply ask "help me build a home page for my pokemon store", the result is not 100% production ready. The issue that images and UI were broken happened always, but these were the easiest part because it was all about css tweaks.
+Nowadays, AI could really build amazing static pages within a minute with just a few prompt. In this project, the Home page, the About page are actually build with help of AI. Although it is super easy to simply ask "help me build a home page for my pokemon store", the result is not 100% production ready. The issue that images and UI were broken happened always, but these were the easiest part because it was all about css tweaks.
 
 ![alt text](image-5.png)
 

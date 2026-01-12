@@ -33,7 +33,7 @@ I find this is the coolest feature because it brings the project to a real world
 
 UI
 
-Nowadays, AI could really build amazing static pages within a minute with just a few prompt. In this project, the Home page, the About page are actually build with help of AI. Although it is super easy to simply ask "help me build a home page for my pokemon store", the result is not 100% production ready. The issue that images and UI were broken happened always, but these were the easiest part because it was all about css tweaks.
+Nowadays, AI could really build amazing static pages within a minute with just a few prompt. In this project, the Home page, the About page are actually build with the help of AI. Although it is super easy to simply ask "help me build a home page for my pokemon store", the result is not 100% production ready. The issue that images and UI were broken happened always, but these were the easiest part because it was all about css tweaks.
 
 ![alt text](image-5.png)
 

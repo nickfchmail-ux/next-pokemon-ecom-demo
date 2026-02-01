@@ -1,8 +1,5 @@
 'use client';
 
-import CreditCardIcon from '@mui/icons-material/CreditCard';
-import DiscountIcon from '@mui/icons-material/Discount';
-import MonetizationOnIcon from '@mui/icons-material/MonetizationOn';
 import Button from '@mui/material/Button';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import Image from 'next/image';
@@ -114,25 +111,19 @@ export default function CartSummary({ user }) {
     <div className="w-full h-min md:h-full bg-gray-50 shadow-lg px-6 flex items-center items-end">
       <ul className="text-lg w-full">
         <li className="flex justify-center border-b py-2 gap-x-2">
-          <Image src={`/pokeball.png`} width={20} height={15} alt="pokeball" />x{' '}
-          <span className="font-semibold">{totalQuantity}</span>
+          <Image src={`/pokeball.png`} width={20} height={15} alt="pokeball" />
+          <span className="font-semibold text-black">x {totalQuantity}</span>
         </li>
         <li className="flex justify-between border-b">
-          <span>
-            <MonetizationOnIcon />
-          </span>
-          <span className="font-semibold">${totalRegularPrice.toFixed(2)}</span>
+          <span className="text-black">Regular</span>
+          <span className="font-semibold text-black">${totalRegularPrice.toFixed(2)}</span>
         </li>
         <li className="flex justify-between border-b">
-          <span>
-            <DiscountIcon />
-          </span>
+          <span className="text-black">Discount</span>
           <span className="font-semibold text-red-500">-${totalDiscountSavings.toFixed(2)}</span>
         </li>
         <li className="flex justify-between">
-          <span>
-            <CreditCardIcon />
-          </span>
+          <span className="text-black">Total</span>
           <span className="text-green-400 flex place-items-center font-semibold">
             ${billingAmount.toFixed(2)}
           </span>
@@ -145,7 +136,7 @@ export default function CartSummary({ user }) {
             className="text-lg p-6 transition-colors rounded-md mt-6 h-min w-[10rem]"
             onClick={handleProceedToCheckout}
           >
-            Proceed to Checkout
+            Pay
           </Button>
         </li>
       </ul>

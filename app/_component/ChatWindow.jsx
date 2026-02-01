@@ -12,6 +12,7 @@ export default function ChatWindow({ header, open, cancelChat }) {
       <form
         onSubmit={handleSubmit}
         className="grid grid-row grid-rows-[auto_1fr_auto] h-full w-full z-100 text-primary-900"
+
       >
         <h1 className="h-min inline-block m-1 text-center">{header}</h1>
         <div className="overflow-y-auto border-t border-primary-500 flex-1 p-2">

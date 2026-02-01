@@ -11,7 +11,7 @@ export default function ChatBox() {
 
   return (
     <div
-      className={`${expandChatBox ? 'w-[200px] h-[200px] bg-amber-50 rounded-2xl' : 'w-[50px] h-[50px] bg-primary-500 rounded-full cursor-pointer hover:border-green-400'} fixed top-120 right-4 flex items-center justify-center  transition-all duration-300 z-1000 border-3 border-primary-800 shadow-lg z-10 overflow-hidden`}
+      className={`${expandChatBox ? 'w-[200px] h-[200px] bg-amber-50 rounded-2xl' : 'w-[50px] h-[50px] bg-primary-500 rounded-full cursor-pointer hover:border-green-400'} fixed top-50 right-4 flex items-center justify-center  transition-all duration-300 z-1000 border-3 border-primary-800 shadow-lg z-10 overflow-hidden `}
     >
       {expandChatBox ? (
         <div className="h-full w-full bg-white">

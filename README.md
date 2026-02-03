@@ -33,7 +33,11 @@ this is the coolest feature because it brings the project to a real world applic
 
 
 4. __Socket.io__ -
-this is an another feature implemented to make the application more real-world. Through this chatbox, every user could join together, chating, exploring, and sharing something on the website anonymously, this can not only help the business to collect instanct feedback from their customers, but importantly build up trust, reputation, and their brand in the community.
+this is an another feature implemented to make the application more real-world. Through this chatbox, every user could join together, chating, exploring, and sharing something on the website anonymously, this can not only help the business to collect instanct feedback from their customers, but importantly build up trust, reputation, and their brand in the community. The messages would save into database, if the user is logged in.
+
+It took me 2 days from plaining to finally implement this features from scratch, thanks to with the help of AI for fast debuging, consulation, guiding along my way. cool!
+
+The main challenge for the feature is the authentication and authorization part, to gain RLS access to supabase realtime socket. As this project use NextAuth, after considering, insteading of reinvent the Auth system, I decide to circumvent the RLS with JWT built in features supported by NextAuth and use server action to address the security concern, so that i could avoid leaving vulnerability to malicious hackers to initiate their attacks.
 
 ![alt text](image-8.png)
 

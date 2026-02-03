@@ -31,6 +31,12 @@ this is the coolest feature because it brings the project to a real world applic
 
 ![alt text](image-2.png)
 
+
+4. __Socket.io__ -
+this is an another feature implemented to make the application more real-world. Through this chatbox, every user could join together, chating, exploring, and sharing something on the website anonymously, this can not only help the business to collect instanct feedback from their customers, but importantly build up trust, reputation, and their brand in the community.
+
+![alt text](image-8.png)
+
 <ins>UI</ins>
 
 Nowadays, AI could really build amazing static pages within a minute with just a few prompts. In this project, the Home page, the About page were actually built with the help of AI. Although it is super easy to simply ask "help me build a home page for my pokemon store", the result is not 100% production ready. The issue that images and UI were broken always happened ,  so tweaking css was needed.

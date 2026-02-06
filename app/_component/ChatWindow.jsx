@@ -104,15 +104,11 @@ export default function ChatWindow({ header, open, cancelChat, onMouseOver, room
       channel.on('broadcast', { event: 'new_message' }, (payload) => {
         const msg = payload.payload;
 
-        if (!msg?.content || typeof msg !== 'object') return;
         if (msg.client_id === clientId.current) return;
 
-        if (!messages?.length) {
-          setMessages([msg]);
-        } else {
-          setMessages((prev) => [...prev, msg]);
-        }
-
+        console.log('previous messages: ', messages);
+        setMessages((prev) => [...prev, msg]);
+        console.log('updated message: ', messages);
       });
 
       // Subscribe to member channel to get logged-in count
@@ -195,12 +191,12 @@ export default function ChatWindow({ header, open, cancelChat, onMouseOver, room
   };
 
   useEffect(() => {
+    if (!data?.length > 0) return;
     const sortedData = data?.sort(
       (a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
     );
 
     setMessages(sortedData);
-
   }, [isLoadingMessages]);
 
   return (

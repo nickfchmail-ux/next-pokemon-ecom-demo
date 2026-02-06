@@ -9,6 +9,7 @@ import {
   setAnonymousUserAction,
   setLoggedInUserAction,
 } from '../_state/_global/chatRoom/chatRoomSlice';
+
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL,
   process.env.NEXT_PUBLIC_SUPABASE_KEY
@@ -18,145 +19,129 @@ export default function ChatWindow({ header, open, cancelChat, onMouseOver, room
   const dispatch = useDispatch();
   const [isPending, startTransition] = useTransition();
   const prevMessagesLength = useRef(0);
-  const [anonymousUser, setAnonymousUser] = useState(0);
-  const [loggedInUser, setLoggedInUser] = useState(0);
-  const uuid = crypto.randomUUID();
   const queryClient = useQueryClient();
-  const bottomRef = useRef(null);
+  const scrollContainerRef = useRef(null);
   const clientId = useRef(null);
-  // Add roomId prop if needed
+  const currentChannelRef = useRef(null);
+  const otherChannelRef = useRef(null);
+
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
-  const currentChannel = useRef(null);
 
   const user = useSelector((state) => state.user.user);
-  const room = useSelector((state) => state.user.chatRoomId);
 
-  const { data, isPending: isSettingMessages } = useQuery({
-    queryKey: ['roomMessages'],
+  const isLoggedInMode = !!user && !!roomId;
+
+  const { data, isPending: isLoadingMessages } = useQuery({
+    queryKey: ['roomMessages', roomId],
     enabled: open && !!roomId,
-    queryFn: () => loadRoomMessages({ roomId: room }),
+    queryFn: () => loadRoomMessages({ roomId }),
     onSuccess: (data) => {
-      setMessages(data);
+      setMessages(data || []);
     },
   });
 
-  const {
-    mutate: sendMessage,
-    isPending: isSendingMessage,
-    error: sendError,
-  } = useMutation({
+  const { mutate: sendMessage, isPending: isSendingMessage } = useMutation({
     mutationFn: (newMsg) => uploadMessage(newMsg),
-    onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: ['roomMessages'] });
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['roomMessages', roomId] });
     },
-    onError: (error) => {},
   });
 
+  // Generate client ID for anonymous visitors (once per session)
   useEffect(() => {
-    if (!user && !room) {
+    if (!isLoggedInMode && !clientId.current) {
       clientId.current = crypto.randomUUID();
     }
-  }, [roomId]); // runs when roomId changes (or on mount)
-
-  useEffect(() => {
-    if (isSettingMessages) return;
-    const sortByTime = data.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
-    setMessages(sortByTime ?? []);
-  }, [isSettingMessages]);
-
-  const filterString = `room_id=eq.${room}`;
+  }, [isLoggedInMode]);
 
   // Realtime subscription
   useEffect(() => {
-    const channelName = !!room ? `member-channel` : 'visitor-broadcast';
-    let channel = supabase.channel(channelName, {
+    const channelName = isLoggedInMode ? 'member-channel' : 'visitor-broadcast';
+    const channel = supabase.channel(channelName, {
       config: {
-        broadcast: {
-          self: true, // Temporarily enable to test receiving (even own messages will log)
-          ack: true, // Enable server acknowledgments to detect send failures
-        },
+        broadcast: { self: true, ack: true },
       },
     });
-    // current users in chat room
+
+    // Presence for the main channel (logged-in or anonymous count)
     channel.on('presence', { event: 'sync' }, () => {
       const state = channel.presenceState();
       const count = Object.keys(state).length;
-
-      if (user) {
-           setLoggedInUser(count);
+      if (isLoggedInMode) {
         dispatch(setLoggedInUserAction(count));
       } else {
-        setAnonymousUser(count);
         dispatch(setAnonymousUserAction(count));
       }
     });
 
-    if (!!(user && room)) {
+    if (isLoggedInMode) {
+      // Listen for new messages in this specific room
       channel.on(
         'postgres_changes',
         {
-          event: 'INSERT', // 'INSERT' only; use '*' for all changes
+          event: 'INSERT',
           schema: 'public',
           table: 'messages',
-          filter: filterString,
+          filter: `room_id=eq.${roomId}`,
         },
         (payload) => {
-          setMessages((prev) => [...prev, payload.new]); // payload.new = the full row
+          setMessages((prev) => [...prev, payload.new]);
         }
       );
 
-      let anonymousChannel = supabase.channel('visitor-broadcast');
-
-      anonymousChannel.on('presence', { event: 'sync' }, () => {
-        const state = anonymousChannel.presenceState();
-
+      // Subscribe to visitor channel to get anonymous count
+      const visitorChan = supabase.channel('visitor-broadcast');
+      visitorChan.on('presence', { event: 'sync' }, () => {
+        const state = visitorChan.presenceState();
         const anonCount = Object.keys(state).length;
-
         dispatch(setAnonymousUserAction(anonCount));
       });
-
-      anonymousChannel.subscribe();
+      visitorChan.subscribe();
+      otherChannelRef.current = visitorChan;
     } else {
+      // Broadcast listener for anonymous chat
       channel.on('broadcast', { event: 'new_message' }, (payload) => {
         const msg = payload.payload;
-
-        if (msg.client_id === clientId.current) return; // Ignore own echo
-
+        if (msg.client_id === clientId.current) return; // ignore own echo
         setMessages((prev) => [...prev, msg]);
       });
 
-      let loggedInChannel = supabase.channel('member-channel');
-      loggedInChannel.on('presence', { event: 'sync' }, () => {
-        const state = loggedInChannel.presenceState();
-        const loggedInCount = Object.keys(state).length;
-
-        dispatch(setLoggedInUserAction(loggedInCount));
+      // Subscribe to member channel to get logged-in count
+      const memberChan = supabase.channel('member-channel');
+      memberChan.on('presence', { event: 'sync' }, () => {
+        const state = memberChan.presenceState();
+        const loggedCount = Object.keys(state).length;
+        dispatch(setLoggedInUserAction(loggedCount));
       });
-
-      loggedInChannel.subscribe();
+      memberChan.subscribe();
+      otherChannelRef.current = memberChan;
     }
 
-    // Single subscribe + track presence
     channel.subscribe(async (status) => {
       if (status === 'SUBSCRIBED') {
         await channel.track({ online: true });
       }
     });
 
-    currentChannel.current = channel;
-    return () => {
-      currentChannel.current?.untrack();
-      supabase.removeChannel(channel);
-    };
-  }, [user, room]);
+    currentChannelRef.current = channel;
 
+    return () => {
+      currentChannelRef.current?.untrack();
+      supabase.removeChannel(currentChannelRef.current);
+      if (otherChannelRef.current) {
+        supabase.removeChannel(otherChannelRef.current);
+        otherChannelRef.current = null;
+      }
+    };
+  }, [isLoggedInMode, roomId, dispatch]);
+
+  // Auto-scroll to bottom
   useEffect(() => {
-    const container = bottomRef.current;
+    const container = scrollContainerRef.current;
     if (!container) return;
 
-    const wasInitial = prevMessagesLength.current <= 0;
-
+    const wasInitial = prevMessagesLength.current === 0;
     const behavior = wasInitial ? 'auto' : 'smooth';
 
     container.scrollTo({
@@ -171,37 +156,33 @@ export default function ChatWindow({ header, open, cancelChat, onMouseOver, room
     e.preventDefault();
     if (!input.trim()) return;
 
-    let newMsg;
-
-    if (room && user) {
-      newMsg = {
+    if (isLoggedInMode) {
+      const newMsg = {
         room_id: roomId,
         content: input,
       };
       sendMessage(newMsg);
     } else {
-      const timestamp = Date.now();
-      newMsg = {
+      const newMsg = {
         content: input,
-        timestamp,
+        timestamp: Date.now(),
         client_id: clientId.current,
       };
 
       try {
-        await currentChannel.current.send({
+        await currentChannelRef.current.send({
           type: 'broadcast',
           event: 'new_message',
           payload: newMsg,
         });
         setMessages((prev) => [...prev, newMsg]);
       } catch (err) {
-        console.log(err);
+        console.error('Broadcast failed:', err);
       }
     }
 
     setInput('');
   };
-  const isLoggedInMode = !!(user && roomId);
 
   return (
     <form
@@ -215,19 +196,21 @@ export default function ChatWindow({ header, open, cancelChat, onMouseOver, room
       </h1>
 
       <div
-        ref={bottomRef}
+        ref={scrollContainerRef}
         className={`overflow-y-auto border-t border-primary-500 flex-1 p-2 ${onMouseOver ? 'text-primary-600' : 'text-primary-900'}`}
       >
-        {roomId && isSettingMessages
+        {roomId && isLoadingMessages
           ? 'Loading messages...'
           : messages?.map((msg, i) => {
               const isOwnMessage = isLoggedInMode
                 ? msg.user_id === user?.id
-                : clientId.current === msg.client_id;
+                : msg.client_id === clientId.current;
 
-              const senderLabel = isLoggedInMode
-                ? user.name || user.email
-                : msg.client_id?.slice(-3) || '???';
+              const shortId = isLoggedInMode
+                ? msg.user_id || '????'
+                : msg.client_id || '????';
+
+              const senderLabel = isLoggedInMode ? `User ${shortId}` : `Guest ${shortId}`;
 
               return (
                 <div
@@ -236,9 +219,9 @@ export default function ChatWindow({ header, open, cancelChat, onMouseOver, room
                 >
                   <div
                     className={`
-          max-w-[75%] w-fit rounded-lg px-3 py-2 text-sm
-          ${isOwnMessage ? 'bg-green-200' : 'bg-amber-100'}
-        `}
+                      max-w-[75%] w-fit rounded-lg px-3 py-2 text-sm
+                      ${isOwnMessage ? 'bg-green-200' : 'bg-amber-100'}
+                    `}
                   >
                     {!isOwnMessage && (
                       <div className="flex items-center gap-1 mb-1 opacity-75">
@@ -251,7 +234,6 @@ export default function ChatWindow({ header, open, cancelChat, onMouseOver, room
                 </div>
               );
             })}
-        <div ref={bottomRef} />
       </div>
 
       <div className="flex flex-col mt-auto">
@@ -260,7 +242,7 @@ export default function ChatWindow({ header, open, cancelChat, onMouseOver, room
           value={input}
           onChange={(e) => setInput(e.target.value)}
           placeholder="Type a message..."
-          className="w-full max-w-md mx-auto mb-2 bg-white border border-amber-200 px-2  rounded focus:outline-none focus:border-amber-400 transition"
+          className="w-full max-w-md mx-auto mb-2 bg-white border border-amber-200 px-2 rounded focus:outline-none focus:border-amber-400 transition"
         />
         <div className="flex justify-between px-2 py-1">
           <button
@@ -272,6 +254,7 @@ export default function ChatWindow({ header, open, cancelChat, onMouseOver, room
           </button>
           <button
             type="submit"
+            disabled={isSendingMessage}
             className="text-xs px-3 py-1 bg-blue-100 text-blue-500 border border-blue-400 rounded-full hover:bg-blue-200 transition"
           >
             Send

@@ -18,8 +18,6 @@ export default function ChatRoomManager() {
 
   return (
     <div className="flex gap-2 items-center">
-      <strong className="text-[10px] text-yellow-300">Chat 芒</strong>
-
       {anonymousUser >= 1 && (
         <div className="bg-white text-primary-900 px-3 py-1 rounded-full flex gap-2 items-center">
           <div className="flex gap-1 items-center">

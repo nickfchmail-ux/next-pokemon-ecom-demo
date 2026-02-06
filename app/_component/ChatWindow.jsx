@@ -84,6 +84,7 @@ export default function ChatWindow({ header, open, cancelChat, onMouseOver, room
       const count = Object.keys(state).length;
 
       if (user) {
+           setLoggedInUser(count);
         dispatch(setLoggedInUserAction(count));
       } else {
         setAnonymousUser(count);

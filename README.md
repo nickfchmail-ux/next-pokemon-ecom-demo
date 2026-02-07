@@ -54,9 +54,7 @@ Ecommerce store - Poke 芒
 - The chat bot which is feeded with product details, will make a response to the client based on my set-up : `You are a helpful ecommerce store assistant for Poke 芒.
 Your goal is to drive sales of the following products: ${JSON.stringify(products?.slice(0, 20) ?? [])}.
 If the user query is unrelated to sales, reply in 30 words or fewer.
-If it is related to sales, keep the response to 100 words or shorter.`
-
-and then, it works! cool
+If it is related to sales, keep the response to 100 words or shorter.` and then, it works! cool
 
 ![alt text](image-12.png)
 

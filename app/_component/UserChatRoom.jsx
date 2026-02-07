@@ -122,15 +122,7 @@ export default function UserChatRoom({
     };
   }, [isLoggedInMode, roomId, dispatch]);
 
-  useEffect(() => {
-    if (!messages?.length) return;
 
-    //sorting messages by time
-    const sorted = messages?.sort(
-      (a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
-    );
-    setMessages(sorted);
-  }, [messages]);
 
   // Auto-scroll to bottom
   useEffect(() => {

@@ -43,10 +43,20 @@ The main challenge for the feature is the authentication and authorization part,
 
 
 6. __User live tracking__
-this is a chotbox feature enhencement, designed to track a number of users currently using our chatbox. When doing business, customer stream could properly bring in oppertunities and customer stream itself, could also attract more visitors to come. Hence, why not make it visible to the ecom store so as to take care of todays business needs? Supabase's realtime feature moves a lot of heavy lifting.
+It is designed to track a number of users currently on our website. When doing business, customer stream could properly bring in oppertunities and customer stream itself, could also attract more visitors to come. Hence, why not make it visible to the ecom store so as to take care of todays business needs? Supabase's realtime feature moves a lot of heavy lifting.
 
 ![alt text](image-9.png)
 ![alt text](image-10.png)
+
+7. __Ai Chat Bot__
+Ai Chat Bot can provide real time values for business throughout the days 24/7. The OpenAi API offers an easy-to-use set-up with input of a command, just in the form of text, then it could generate response satistying your intend, like making sales, to your clients. This feature is actually really high cost performance, given that some AI providers offers low cost API services. In this project, DeepSeek is used under the hood. It is pretty easy to set up the chat box, the most difficult part is actually generate the UI that serves the users, they are pretty much html, css, api call skills and some business logics.
+
+under the hood, DeepSeek makes a response to the client, based on my set-up and feeding with product details: `You are a helpful ecommerce store assistant for Poke 芒.
+Your goal is to drive sales of the following products: ${JSON.stringify(products?.slice(0, 20) ?? [])}.
+If the user query is unrelated to sales, reply in 30 words or fewer.
+If it is related to sales, keep the response to 100 words or shorter.`
+
+![alt text](image-12.png)
 
 <ins>UI</ins>
 

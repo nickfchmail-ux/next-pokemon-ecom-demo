@@ -4,6 +4,7 @@ import { createClient } from '@supabase/supabase-js';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Activity, useEffect, useRef, useState, useTransition } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { deepSeekApiQuery } from '../_lib/deepseek-service';
 import { loadRoomMessages, uploadMessage } from '../_lib/socket-service';
 
 import AiChatRoom from './AiChatRoom';
@@ -48,6 +49,15 @@ export default function ChatWindow({ header, open, cancelChat, onMouseOver, room
     mutationFn: (newMsg) => uploadMessage(newMsg),
   });
 
+  const { mutate: sendQueryToDeepSeek, isPending: isSendingDeepSeekQuery } = useMutation({
+    mutationFn: (content) => deepSeekApiQuery(content),
+    onSuccess: (data, content) => {
+      const cacheKey = ['deepseek-response', content];
+      queryClient.setQueryData(cacheKey, data);
+      setAiQuery((prev) => [...prev, data]);
+    },
+  });
+
   // Generate client ID for anonymous visitors (once per session)
   useEffect(() => {
     if (!isLoggedInMode && !clientId.current) {
@@ -77,7 +87,19 @@ export default function ChatWindow({ header, open, cancelChat, onMouseOver, room
     if (!input.trim()) return;
 
     if (switchToAiChat) {
-      setAiQuery((prev) => [...prev, input.trim()]);
+      const cacheKey = ['deepseek-response', input.trim()];
+
+      const returnFromPrevResponseWithTheSameContent = queryClient.getQueryData(cacheKey);
+      console.log('prev query: ', returnFromPrevResponseWithTheSameContent);
+      if (returnFromPrevResponseWithTheSameContent) {
+        let modifiedReturn = { ...returnFromPrevResponseWithTheSameContent };
+        modifiedReturn.answer = modifiedReturn.answer + '-repeated ';
+
+        setAiQuery((prev) => [...prev, modifiedReturn]);
+      } else {
+        console.log('input: ', input.trim());
+        sendQueryToDeepSeek(input.trim());
+      }
     } else {
       if (isLoggedInMode) {
         const newMsg = {
@@ -125,7 +147,7 @@ export default function ChatWindow({ header, open, cancelChat, onMouseOver, room
           {header}
         </strong>
         <button
-          className={`px-2 py-1 rounded-full border border-primary-500  ml-1 text-[12px] shadow-accent   ${switchToAiChat ? 'bg-primary-600 shadow-lg border border-primary-950 text-white ' : 'hover:text-primary-900'}`}
+          className={`px-2 py-1 cursor-pointer rounded-full border border-primary-500  ml-1 text-[12px] shadow-accent   ${switchToAiChat ? 'bg-primary-600 shadow-lg border border-primary-950 text-white ' : 'hover:text-primary-900'}`}
           onClick={() => setSwitchToAiChat(!switchToAiChat)}
         >
           On Bot
@@ -145,7 +167,11 @@ export default function ChatWindow({ header, open, cancelChat, onMouseOver, room
         </Activity>
 
         <Activity mode={switchToAiChat ? 'visible' : 'hidden'}>
-          <AiChatRoom aiQuery={aiQuery} setAiQuery={setAiQuery} />
+          <AiChatRoom
+            aiQuery={aiQuery}
+            setAiQuery={setAiQuery}
+            isPending={isSendingDeepSeekQuery}
+          />
         </Activity>
 
         <div className="flex flex-col mt-auto">
@@ -166,10 +192,10 @@ export default function ChatWindow({ header, open, cancelChat, onMouseOver, room
             </button>
             <button
               type="submit"
-              disabled={isSendingMessage}
-              className="text-xs px-3 py-1 bg-blue-100 text-blue-500 border border-blue-400 rounded-full hover:bg-blue-200 transition"
+              disabled={isSendingMessage || isSendingDeepSeekQuery}
+              className={`text-xs px-3 py-1 border ${isSendingMessage || isSendingDeepSeekQuery ? 'bg-gray-300 text-gray-800 border-gray-700' : 'bg-blue-100 text-blue-500  border-blue-400 hover:bg-blue-200'} rounded-full  transition`}
             >
-              Send
+              {isSendingMessage || isSendingDeepSeekQuery ? 'Loading...' : 'Send'}
             </button>
           </div>
         </div>

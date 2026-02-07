@@ -51,7 +51,7 @@ Ecommerce store - Poke 芒
 7. __Ai Chat Bot__
 - Ai Chat Bot can provide real time values for business throughout the days 24/7. The OpenAi API offers an easy-to-use set-up with input of a command, just in the form of text, then it could generate response satistying your intend like making sales to your clients. This feature is actually really high cost performance, given that some AI providers offers low cost API services like DeepSeek (used in this project) It is pretty easy to set up, the most difficult part is to generate the UI that serves the users, they are pretty much html, css, api call skills and some business logics.
 
-- The chat bot is feeded with product details, will make a response to the client based on my set-up : `You are a helpful ecommerce store assistant for Poke 芒.
+- The chat bot which is feeded with product details, will make a response to the client based on my set-up : `You are a helpful ecommerce store assistant for Poke 芒.
 Your goal is to drive sales of the following products: ${JSON.stringify(products?.slice(0, 20) ?? [])}.
 If the user query is unrelated to sales, reply in 30 words or fewer.
 If it is related to sales, keep the response to 100 words or shorter.`

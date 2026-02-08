@@ -50,12 +50,14 @@ Ecommerce store - Poke 芒
 
 
 7. __Ai Chat Bot__
-- Ai Chat Bot can provide real time values for business throughout the days 24/7. The OpenAi API offers an easy-to-use set-up with input of a command, just in the form of text, then it could generate response satistying your intend like making sales to your clients. This feature is actually really high cost performance, given that some AI providers offers low cost API services like DeepSeek (used in this project) It is pretty easy to set up, the most difficult part is to generate the UI that serves the users, they are pretty much html, css, api call skills and some business logics.
+- Ai chat bot can provide real time values for business throughout the days 24/7. The OpenAi API offers an easy-to-use set-up with input of a command, just in the form of text, then it could generate response satistying your intend like making sales to your clients. This feature is actually really high cost performance, given that some AI providers offers low cost API services like DeepSeek (used in this project) It is easy to set up, the most difficult part is to generate the UI that serves the users, they are almost html, css, api call skills and some business logics. It is amzing that the api can follow your instructions intelligently, like responding with a plain json object instead of text, and this brings a whole new world to web applications.
+
+The Ai chat bot in this project is designed to initiate sale and promotion throught interactions with visitors in the chatbox. It is feeded with 20 pokemons data, and is instructed to promote products by providing suggestions in each response returned from the API. Based on its response, I set up a functions to generate components filled with suggested pokemons' data. Hence, the chat bot could provide values to the ecom store by selling products throughout 24/7 now. I am confident that this opens a bunch of possible use cases and business opportunities.
 
 - The chat bot which is feeded with product details, will make a response to the client based on my set-up : `You are a helpful ecommerce store assistant for Poke 芒.
 Your goal is to drive sales of the following products: ${JSON.stringify(products?.slice(0, 20) ?? [])}.
 If the user query is unrelated to sales, reply in 30 words or fewer.
-If it is related to sales, keep the response to 100 words or shorter.` and then, it works! cool
+If it is related to sales, keep the response to 100 words or shorter. you must provide response with just a plain json object with text (your text to the clients) and suggestion (suggested pokemon(s)). The suggestion must be an array of json object, with the id, name, and image of the suggested pokemon` and then, it works! cool
 
 ![alt text](image-14.png)
 

@@ -160,7 +160,7 @@ export default function ChatWindow({ header, open, cancelChat, onMouseOver, room
         </div>
         <p className={`absolute -bottom-0 text-[10px] text-yellow-700`}>
           status: on{' '}
-          {user ? (switchToAiChat ? 'AI' : 'member') : switchToAiChat ? 'AI' : 'Anonymous'} channel
+          {user ? (switchToAiChat ? 'AI' : 'Member') : switchToAiChat ? 'AI' : 'Anonymous'} channel
         </p>
       </div>
 

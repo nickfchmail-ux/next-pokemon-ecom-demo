@@ -16,9 +16,10 @@ Ecommerce store - Poke 芒
  - The feature was suggested by the AI (grok), during which i interacted with and in the meanwhile asking AI for help, and fixed the problem until the wee hours.
 
 2. __User Profile__
-- The TanStack Query help to handle user request only from the frontend, and give developer access to pending state when the POST request is submitted to the server. It is a convenience way to show a spinner UI and provide a good user experience when waiting for server's response.
+- The TanStack Query help to handle user request only from the frontend, and give developer access to pending state when the POST request is submitted to the server. It is a convenience way to show a spinner UI and provide a good user experience when waiting for server's response. Users could update their profile on the User Profile page, after that a post request would be handled by useMutation API feature support by TanStack Query which could perform call back actions based on success or error return.
 
 ![alt text](image-4.png)
+
 
 3. __Infinite scrolling__
 - The TanStack Query also provides a very handy feature to implement infinite scrolling just like Youtube. Initially, the product page will only show a little amount of products for sale. After the user scrolls nearly at the end of the div (the container), a POST request would be made to the server to load more products for display.
@@ -45,8 +46,8 @@ Ecommerce store - Poke 芒
 6. __User live tracking__
 - It is designed to track a number of users currently on our website. When doing business, customer stream could properly bring in oppertunities and customer stream itself, could also attract more visitors to come. Hence, why not make it visible to the ecom store so as to take care of todays business needs? Supabase's realtime feature moves a lot of heavy lifting.
 
-![alt text](image-9.png)
-![alt text](image-10.png)
+![alt text](image-11.png)
+
 
 7. __Ai Chat Bot__
 - Ai Chat Bot can provide real time values for business throughout the days 24/7. The OpenAi API offers an easy-to-use set-up with input of a command, just in the form of text, then it could generate response satistying your intend like making sales to your clients. This feature is actually really high cost performance, given that some AI providers offers low cost API services like DeepSeek (used in this project) It is pretty easy to set up, the most difficult part is to generate the UI that serves the users, they are pretty much html, css, api call skills and some business logics.
@@ -68,9 +69,11 @@ Nowadays, AI could really build amazing static pages within a minute with just a
 
 ![alt text](image-7.png)
 
+
 1. __Tailwind CSS__
 Tailwind CSS offers css patterns for developer to quickly adopt a common UI. The good thing is that this applies to responsive layout display with mobile first media approach. It is very easy to set mobile UI with just "md:____" and it will make the layout adaptive to mobile screen.
 
 ![alt text](image.png)
+
 
 Deployment to Vercel: https://next-pokemon-ecom-demo.vercel.app/

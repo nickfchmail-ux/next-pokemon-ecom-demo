@@ -38,7 +38,7 @@ export default function ChatBox() {
         className="pointer-events-auto top-50 right-4 absolute z-50 "
       >
         <div
-          className={`${expandChatBox ? `${extendWindow ? 'w-[370px] h-[600px]' : 'w-[200px] h-[300px]'}  bg-amber-50 rounded-2xl` : 'w-[50px] h-[50px] bg-primary-500 rounded-full cursor-pointer hover:border-green-400'}  t flex items-center justify-center  transition-all duration-300  border-3 border-primary-800 shadow-lg z-10 overflow-hidden ${isLoadingRoom ? 'opacity-20 pointer-none' : ''}`}
+          className={`${expandChatBox ? `${extendWindow ? 'w-[350px] h-[600px]' : 'w-[200px] h-[300px]'}  bg-amber-50 rounded-2xl` : 'w-[50px] h-[50px] bg-primary-500 rounded-full cursor-pointer hover:border-green-400'}  t flex items-center justify-center  transition-all duration-300  border-3 border-primary-800 shadow-lg z-10 overflow-hidden ${isLoadingRoom ? 'opacity-20 pointer-none' : ''}`}
           onMouseOver={() => setOnMouseOver(true)}
           onMouseLeave={() => setOnMouseOver(false)}
         >

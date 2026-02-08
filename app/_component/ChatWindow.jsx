@@ -1,12 +1,12 @@
 'use client';
 
+import Switch from '@mui/material/Switch';
 import { createClient } from '@supabase/supabase-js';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Activity, useEffect, useRef, useState, useTransition } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { deepSeekApiQuery } from '../_lib/deepseek-service';
 import { loadRoomMessages, uploadMessage } from '../_lib/socket-service';
-
 import AiChatRoom from './AiChatRoom';
 import UserChatRoom from './UserChatRoom';
 const supabase = createClient(
@@ -142,17 +142,28 @@ export default function ChatWindow({ header, open, cancelChat, onMouseOver, room
 
   return (
     <div className={`grid grid-rows-[auto_1fr] h-full w-full z-50 text-primary-900`}>
-      <div className={`h-min p-2 flex justify-between border border-b-primary-800`}>
-        <strong className={`${onMouseOver ? 'text-blue-500' : 'text-primary-900'}`}>
+      <div
+        className={`h-min px-2 pb-1 flex justify-between border border-b-primary-800 items-center relative`}
+      >
+        <strong className={`${onMouseOver ? 'text-blue-500' : 'text-primary-900'} relative`}>
           {header}
         </strong>
-        <button
-          className={`px-2 py-1 cursor-pointer rounded-full border border-primary-500  ml-1 text-[12px] shadow-accent   ${switchToAiChat ? 'bg-primary-600 shadow-lg border border-primary-950 text-white ' : 'hover:text-primary-900'}`}
-          onClick={() => setSwitchToAiChat(!switchToAiChat)}
-        >
-          AI Chat
-        </button>
+        <div className={`relative`}>
+          <p
+            className="absolute right-2 -top-.5 text-[10px] font-semibold text-cyan-400
+  [text-shadow:_0_0_10px_#06b6d4,_0_0_20px_#06b6d4,_0_0_30px_#06b6d4]
+  animate-pulse drop-shadow-lg"
+          >
+            AI mode
+          </p>
+          <Switch onChange={() => setSwitchToAiChat(!switchToAiChat)} color="primary" label="AI" />
+        </div>
+        <p className={`absolute -bottom-0 text-[10px] text-yellow-700`}>
+          status: on{' '}
+          {user ? (switchToAiChat ? 'AI' : 'member') : switchToAiChat ? 'AI' : 'Anonymous'} channel
+        </p>
       </div>
+
       <form onSubmit={handleSubmit} className="grid grid-rows-[auto_1fr_auto] overflow-y-auto">
         <Activity mode={switchToAiChat ? 'hidden' : 'visible'}>
           <UserChatRoom
@@ -176,11 +187,12 @@ export default function ChatWindow({ header, open, cancelChat, onMouseOver, room
 
         <div className="flex flex-col mt-auto">
           <input
+            disabled={isSendingDeepSeekQuery}
             type="text"
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            placeholder="Type a message..."
-            className="w-full max-w-md mx-auto mb-2 bg-white border border-amber-200 px-2 rounded focus:outline-none focus:border-amber-400 transition"
+            placeholder={`${isSendingDeepSeekQuery ? 'sending a message...' : 'Type a message...'}`}
+            className={`w-full max-w-md mx-auto mb-2  border  px-2 rounded focus:outline-none focus:border-amber-400 transition ${isSendingDeepSeekQuery ? 'bg-gray-100 border-gray-500 cursor-not-allowed' : 'bg-white border-amber-200'}`}
           />
           <div className="flex justify-between px-2 py-1">
             <button

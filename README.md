@@ -59,9 +59,12 @@ Your goal is to drive sales of the following products: ${JSON.stringify(products
 If the user query is unrelated to sales, reply in 30 words or fewer.
 If it is related to sales, keep the response to 100 words or shorter. you must provide response with just a plain json object with text (your text to the clients) and suggestion (suggested pokemon(s)). The suggestion must be an array of json object, with the id, name, and image of the suggested pokemon` and then, it works! cool
 
-- The real challenge is that the DeepSeek API response is somehow not in plain json object and this would produce bug in the application. After investigation, the bug may appear if the response is paint texts, happened when user talked something that were not relevant to pokemon, just like asking 'how are you going today?' This is quite painful because it is unpredictable. In order to address this issue, I add a simple validation to check whether the response start with a '｛ ' and manipulate the response to send a message 'something wrong happened' to the client, hopefully without breaking the entire app.
-
 ![alt text](image-14.png)
+
+
+- The real challenge is that the DeepSeek API response is somehow not in plain json object and this would produce bug in the application. After investigation, the bug may appear if the response is paint texts, happened when user talked something that were not relevant to pokemon, just like asking 'how are you going today?' This is quite painful because it is unpredictable. In order to address this issue, I add a simple validation to check whether the response start with a '{' and manipulate the response to send a message 'something wrong happened' to the client, hopefully without breaking the entire app.
+
+![alt text](image-15.png)
 
 
 <ins>UI</ins>

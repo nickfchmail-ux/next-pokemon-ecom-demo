@@ -10,6 +10,14 @@ import TableRow from '@mui/material/TableRow';
 import Typography from '@mui/material/Typography';
 import { getInvoices } from '../../_lib/data-service';
 
+export const metadata = {
+  title: 'Your Invoice',
+  description: 'You can track your invoice(s) here.',
+};
+
+
+
+
 export default async function Page() {
   const invoices = await getInvoices();
 

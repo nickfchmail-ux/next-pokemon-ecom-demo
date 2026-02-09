@@ -2,6 +2,15 @@ import UserProfile from '../../_component/UserProfile';
 import { CardContent, CardTitle } from '../../_componentAPI/card';
 import { auth } from '../../_lib/auth';
 import { getUser } from '../../_lib/data-service';
+
+
+export const metadata = {
+  title: 'Your Profile',
+  description: 'You can manage your personal information here.',
+};
+
+
+
 export default async function Page() {
   const session = await auth();
 

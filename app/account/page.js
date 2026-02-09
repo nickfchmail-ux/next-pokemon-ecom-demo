@@ -6,6 +6,15 @@ import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import { auth } from '../_lib/auth';
 import { getInvoices, getUser } from '../_lib/data-service';
+
+
+export const metadata = {
+  title: 'Your Account',
+  description: 'Your account page there, you can manage your profile, track your invoice there.',
+};
+
+
+
 export default async function Page() {
   const session = await auth();
   const { id, created_at, ...userProfile } = await getUser(session?.user?.email);

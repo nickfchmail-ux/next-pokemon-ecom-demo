@@ -62,11 +62,6 @@ If it is related to sales, keep the response to 100 words or shorter. you must p
 ![alt text](image-14.png)
 
 
-- The real challenge is that the DeepSeek API response is somehow not in plain json object and this would produce bug in the application. After investigation, the bug may appear if the response is paint texts, happened when user talked something that were not relevant to pokemon, just like asking 'how are you going today?' This is quite painful because it is unpredictable. In order to address this issue, I add a simple validation to check whether the response start with a '{' and manipulate the response to send a message 'something wrong happened' to the client, hopefully without breaking the entire app.
-
-![alt text](image-15.png)
-
-
 <ins>UI</ins>
 
 Nowadays, AI could really build amazing static pages within a minute with just a few prompts. In this project, the Home page, the About page were actually built with the help of AI. Although it is super easy to simply ask "help me build a home page for my pokemon store", the result is not 100% production ready. The issue that images and UI were broken always happened ,  so tweaking css was needed.

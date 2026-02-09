@@ -35,7 +35,7 @@ export async function deepSeekApiQuery(content) {
     //checking if the response is a plain json object, if not return an object to prevent breaking the app
     if (!answerText.startsWith('{')) {
       answerText = {
-        text: 'Sorry, we are facing some issues. Please try again later...',
+        text: answerText,
         suggestion: [],
       };
     }
@@ -48,6 +48,10 @@ export async function deepSeekApiQuery(content) {
       created: completion.created, // timestamp, number – safe
     };
   } catch (err) {
-    throw new Error(`Error from calling ai api: ${err}`);
+    console.log(`Error: ${err}`);
+    return {
+      text: 'Sorry we are facing some issue, please try again later...',
+      suggestion: [],
+    };
   }
 }

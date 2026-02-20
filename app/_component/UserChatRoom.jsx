@@ -106,7 +106,7 @@ export default function UserChatRoom({
 
     channel.subscribe(async (status) => {
       if (status === 'SUBSCRIBED') {
-        await channel.track({ online: true });
+        await channel.track({ online: true, user: user?.id || `Anonymous-${clientId.current}` });
       }
     });
 
